@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fleet Prompt Polisher</title>
+<style>
+:root{--bg:#0f1220;--panel:#171b2e;--ink:#e8eaf6;--mute:#9aa0c3;--line:#2a3050;--acc:#ff4fb8;--ok:#43d17a;--warn:#ffb547;--bad:#ff6b6b;--ins:#123d27;--insb:#43d17a;--del:#4a1b22;--delb:#ff6b6b}
+*{box-sizing:border-box}body{margin:0;font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+header{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,#1b1240,#0f1220)}
+header h1{font-size:20px;margin:0}header .tag{color:var(--mute);font-size:13px}
+.pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;border:1px solid var(--line);color:var(--mute);margin-right:4px}
+.pill.acc{border-color:var(--acc);color:var(--acc)}.pill.bad{border-color:var(--bad);color:var(--bad)}.pill.warn{border-color:var(--warn);color:var(--warn)}.pill.ok{border-color:var(--ok);color:var(--ok)}
+.wrap{display:grid;grid-template-columns:270px 1fr;min-height:calc(100vh - 60px)}
+nav{border-right:1px solid var(--line);padding:12px;background:#121629;position:sticky;top:0;align-self:start;max-height:100vh;overflow:auto}
+nav a{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:8px;color:var(--ink);text-decoration:none;margin-bottom:2px}
+nav a:hover{background:#1d2340}nav a.on{background:#2a1f55;outline:1px solid var(--acc)}
+nav .cnt{font-size:11px;color:var(--mute)}nav .sec{color:var(--mute);font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin:12px 6px 6px}
+main{padding:22px 28px;max-width:1500px}
+h2{margin:.2em 0 .3em;font-size:26px}h3{margin:26px 0 8px;font-size:17px;color:#cfd3ff}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:10px 0}
+.summary{font-size:16px}
+blockquote{margin:6px 0;padding:6px 12px;border-left:3px solid var(--acc);background:#1d1a35;color:#f3d9ff;font-style:italic;white-space:pre-wrap}
+.kind{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--warn)}
+.diffbar{display:flex;gap:8px;align-items:center;margin:6px 0 8px;flex-wrap:wrap}
+.diffbar button{background:#232a4a;color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:4px 10px;cursor:pointer}
+.diffbar button.on{border-color:var(--acc);color:var(--acc)}
+.diff{display:grid;grid-template-columns:1fr 1fr;gap:10px}.diff.inline{grid-template-columns:1fr}
+.pane{background:#0c0f1c;border:1px solid var(--line);border-radius:10px;padding:10px 12px;white-space:pre-wrap;word-break:break-word;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace}
+.pane .lbl{display:block;font:600 11px system-ui;color:var(--mute);text-transform:uppercase;margin-bottom:6px;letter-spacing:.08em}
+del{background:var(--del);color:#ffc9c9;text-decoration:line-through;text-decoration-color:var(--delb)}ins{background:var(--ins);color:#c9ffd9;text-decoration:none}
+table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}th{color:var(--mute);font-size:12px;text-transform:uppercase}
+.rank{font-size:22px;font-weight:800;color:var(--acc);width:40px}.est{color:var(--ok);font-weight:600}.meth{color:var(--mute);font-size:12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:10px}
+.small{font-size:12px;color:var(--mute)}.note{color:var(--warn);font-size:13px}
+@media (max-width:820px){.wrap{grid-template-columns:1fr}nav{position:static;max-height:none;display:flex;flex-wrap:wrap;gap:4px}nav a{flex:1 1 40%}.diff{grid-template-columns:1fr}main{padding:14px}}
+</style></head>
+<body>
+<header><h1>✨ Fleet Prompt Polisher</h1><span class="tag" id="gen"></span><span style="flex:1"></span><span class="pill acc">read-only · nothing applied · Boyd decides</span></header>
+<div class="wrap"><nav id="nav"></nav><main id="main"></main></div>
+<script>
+window.__errs=[];window.addEventListener('error',function(e){window.__errs.push(String(e.message));document.body.setAttribute('data-jserr',window.__errs.join(' | '));});
+const DATA=/*__DATA__*/null;
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let MODE=localStorage.getItem('pp-mode')||'side';
+function renderDiff(ops,id){
+  let b='',a='',u='';
+  for(const [t,x,y] of ops){
+    if(t==='equal'){b+=esc(x);a+=esc(y);u+=esc(x);}
+    else{ if(x){b+='<del>'+esc(x)+'</del>';u+='<del>'+esc(x)+'</del>';} if(y){a+='<ins>'+esc(y)+'</ins>';u+='<ins>'+esc(y)+'</ins>';} }
+  }
+  const side='<div class="pane"><span class="lbl">Before (real text, redacted)</span>'+b+'</div><div class="pane"><span class="lbl">After (suggested)</span>'+a+'</div>';
+  const inl='<div class="pane"><span class="lbl">Inline diff</span>'+u+'</div>';
+  return '<div class="diff '+(MODE==='inline'?'inline':'')+'" data-diff="'+id+'">'+(MODE==='inline'?inl:side)+'</div>';
+}
+function diffBlock(title,obj,id,meta){
+  const delta=obj.tokensAfter-obj.tokensBefore;
+  return '<div class="card" id="'+id+'"><div class="diffbar"><b>'+esc(title)+'</b>'+(meta||'')+
+   '<span class="pill">≈'+obj.tokensBefore+' → '+obj.tokensAfter+' tokens ('+(delta>0?'+':'')+delta+')</span>'+
+   '<span style="flex:1"></span><button class="'+(MODE==='side'?'on':'')+'" onclick="setMode(\'side\')">side by side</button><button class="'+(MODE==='inline'?'on':'')+'" onclick="setMode(\'inline\')">inline</button></div>'+
+   renderDiff(obj.ops,id)+(obj.note?'<p class="note">'+esc(obj.note)+'</p>':'')+'</div>';
+}
+function setMode(m){MODE=m;localStorage.setItem('pp-mode',m);route();}
+function nav(cur){
+  let h='<div class="sec">Overview</div><a href="#fleet" class="'+(cur==='fleet'?'on':'')+'">🏁 Fleet summary <span class="cnt">top 10</span></a><div class="sec">Bots ('+DATA.botCount+')</div>';
+  for(const b of DATA.bots){
+    const n=b.overlaps.filter(o=>/duplicate|contradiction|double|shared/.test(o.kind)).length;
+    h+='<a href="#bot='+encodeURIComponent(b.name)+'" class="'+(cur===b.name?'on':'')+'" data-bot="'+esc(b.name)+'"><span>'+esc(b.name)+'</span><span class="cnt">'+(n?'<span class="pill bad">'+n+' conflict</span>':'')+b.routines.length+' rt</span></a>';
+  }
+  document.getElementById('nav').innerHTML=h;
+}
+function fleet(){
+  let h='<h2>Fleet summary</h2><p class="summary">'+DATA.botCount+' bots, '+DATA.routineCount+' routine prompts on disk, '+DATA.conflicts.length+' cross-bot conflicts. The top 10 fixes below would save an <b>estimated ≈'+DATA.totals.agentMinPerWeekSaved+' agent-min a week</b>, against ≈'+DATA.totals.fleetAgentMinPerWeek+' a week of enabled routines.</p><p class="meth">Estimate method: '+esc(DATA.totals.method)+'</p>';
+  h+='<h3>Top 10 fixes, ranked by impact</h3><div class="card"><table><tr><th>#</th><th>Fix</th><th>Estimated saving (with method)</th></tr>';
+  for(const t of DATA.top10){
+    h+='<tr><td class="rank">'+t.rank+'</td><td><b>'+esc(t.title)+'</b><div class="small">'+t.bots.map(b=>'<a style="color:#cfd3ff" href="#bot='+encodeURIComponent(b)+'">'+esc(b)+'</a>').join(' · ')+'</div><div>'+esc(t.why)+'</div></td><td>'+
+      (t.estimate?'<div class="est">Estimate: '+esc(t.estimate)+'</div><div class="meth">'+esc(t.method)+'</div>':'')+(t.extra?'<div class="small">'+esc(t.extra)+'</div>':'')+'</td></tr>';
+  }
+  h+='</table></div><h3>Conflicts and overlaps between bots</h3><div class="grid2">';
+  for(const c of DATA.conflicts){h+='<div class="card"><div class="kind">'+c.bots.map(esc).join(' ↔ ')+'</div><b>'+esc(c.title)+'</b><div>'+esc(c.detail)+'</div></div>';}
+  h+='</div><h3>Honesty notes</h3><div class="card"><ul>'+DATA.notes.map(n=>'<li>'+esc(n)+'</li>').join('')+'</ul></div>';
+  return h;
+}
+function bot(b,focus){
+  let h='<h2>'+esc(b.name)+' <span class="pill">'+esc(b.title||'')+'</span>'+(b.fleetDoctor.grade?'<span class="pill warn">Fleet Doctor grade '+esc(b.fleetDoctor.grade)+'</span>':'')+'</h2>';
+  h+='<div class="card summary">'+esc(b.summary)+'</div>';
+  h+='<h3>Overlaps and conflicts</h3>'+(b.overlaps.length?b.overlaps.map(o=>'<div class="card"><div class="kind">'+esc(o.kind)+' · with '+o.with_.map(esc).join(', ')+'</div>'+esc(o.text)+(o.quote?'<blockquote>“'+esc(o.quote)+'”</blockquote>':'')+'</div>').join(''):'<p class="small">None found.</p>');
+  if(focus){h+='<h3>Suggested rewrite (not applied) · <a style="color:#ff4fb8" href="#bot='+encodeURIComponent(b.name)+'">open full review</a></h3>';
+    if(focus==='persona')h+=diffBlock('Persona',b.persona,'persona');
+    b.routines.forEach((r,i)=>{if(focus==='routine-'+i){const meta='<span class="pill">'+esc(r.when)+'</span><span class="pill '+(r.enabled?'ok':'')+'">'+(r.enabled?'enabled':'paused')+'</span>'+(r.measured?'<span class="pill">≈'+r.measured.minutesPerWeek+' agent-min/wk measured</span>':'');h+=diffBlock('Routine: '+r.name,r,'routine-'+i,meta);}});
+    return h;}
+  h+='<h3>Vague or risky instructions</h3>'+(b.risks.length?b.risks.map(r=>'<div class="card"><blockquote>“'+esc(r.quote)+'”</blockquote>'+esc(r.issue)+'</div>').join(''):'<p class="small">None found.</p>');
+  h+='<h3>Schedule vs. purpose</h3>'+(b.schedule.length?b.schedule.map(s=>'<div class="card"><b>'+esc(s.routine)+'</b>: '+esc(s.issue)+'</div>').join(''):'<p class="small">No scheduled routines (on demand only).</p>');
+  if(b.rulesKept&&b.rulesKept.length){h+='<h3>Standing rules kept word for word</h3>'+b.rulesKept.map(r=>'<div class="card" style="border-color:#2f6b45">🔒 '+esc(r)+'</div>').join('');}
+  h+='<h3>Suggested rewrites (not applied)</h3>';
+  h+=diffBlock('Persona',b.persona,'persona');
+  b.routines.forEach((r,i)=>{const meta='<span class="pill">'+esc(r.when)+'</span><span class="pill '+(r.enabled?'ok':'')+'">'+(r.enabled?'enabled':'paused')+'</span>'+(r.measured?'<span class="pill">≈'+r.measured.minutesPerWeek+' agent-min/wk measured</span>':'');h+=diffBlock('Routine: '+r.name,r,'routine-'+i,meta);});
+  if(!b.routines.length)h+='<p class="small">No routine prompts on disk for this bot.</p>';
+  if(b.fleetDoctor.findings.length){h+='<h3>Fleet Doctor context</h3>'+b.fleetDoctor.findings.map(f=>'<div class="card small"><span class="pill">'+esc(f.severity)+'</span>'+esc(f.title)+'</div>').join('');}
+  return h;
+}
+function route(){
+  const hs=decodeURIComponent(location.hash.slice(1)||'fleet');const p=new URLSearchParams(hs.replace(/^fleet$/,''));
+  const name=p.get('bot');const b=name&&DATA.bots.find(x=>x.name===name);
+  nav(b?b.name:'fleet');const f=p.get('focus');document.getElementById('main').innerHTML=b?bot(b,f):fleet();window.scrollTo(0,0);
+  if(p.get('mode')&&p.get('mode')!==MODE){MODE=p.get('mode');route();return;}
+  document.body.setAttribute('data-ready','1');document.body.setAttribute('data-diffs',String(document.querySelectorAll('[data-diff]').length));
+}
+document.getElementById('gen').textContent='Built '+DATA.generatedAt+' · '+DATA.botCount+' bots';
+window.addEventListener('hashchange',route);route();
+</script></body></html>
