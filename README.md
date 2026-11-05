@@ -1,6 +1,6 @@
 # ✨ Fleet Prompt Polisher
 
-TokenMax build night, Oct 7 2026. This is a **read-only** review of all 15 Grok Bots in Boyd's fleet: Michael, Pam, Oscar, Jim, Kelly, Ryan, Dwight, Brief, Pods, Path, Vic Tutor, Char Tutor, Boyd Family Times, Dr. EggBot and TokenMax.
+TokenMax build night, Oct 7 2026. This is a **read-only** review of all 15 Grok Bots in Alex's fleet: Michael, Pam, Oscar, Jim, Kelly, Ryan, Dwight, Brief, Pods, Path, Jordan Tutor, Riley Tutor, Lakeside Family Times, Dr. EggBot and TokenMax.
 
 For each bot it shows:
 - a plain-English summary of the bot's job
@@ -11,7 +11,7 @@ For each bot it shows:
 
 At fleet level there's a ranked top 10, and each fix carries an **estimated** saving with its method shown.
 
-**Nothing is applied.** No bot, routine or file outside this folder was touched. Boyd decides what to apply, and Boyd and Miranda decide anything about the kids' schedules.
+**Nothing is applied.** No bot, routine or file outside this folder was touched. Alex decides what to apply, and Alex and Sam decide anything about the kids' schedules.
 
 ## Run
 ```bash
@@ -45,13 +45,13 @@ The rewrites keep, word for word or stronger:
 The smoke test fails if a rewrite drops any of these.
 
 ## Honesty notes
-- Pods, Path, Boyd Family Times and TokenMax describe daily routines that aren't on disk (newer bots; their routines live server-side). Only their wake lines were reviewed.
+- Pods, Path, Lakeside Family Times and TokenMax describe daily routines that aren't on disk (newer bots; their routines live server-side). Only their wake lines were reviewed.
 - Savings are estimates. Agent-minutes come from Fleet Doctor's logs, which end Sep 15. Prompt-token savings are characters ÷ 4. The Oscar 25% stop-rule trim is labelled as an assumption.
 - Fleet Doctor flagged Jim's Bill Simmons watch as "finished". Its prompt is weekly by design, so that flag is likely a false positive; this review flags ownership and the missing season end date instead.
 
 
 ---
 ## Repo notes
-- **Built:** Oct 7 2026, by TokenMax (Boyd's Grok Bot) on the Grok Bot box.
+- **Built:** Oct 7 2026, by TokenMax (Alex's Grok Bot) on the Grok Bot box.
 - **Run:** `./run.sh` (then open the localhost URL it prints).
 - Imported from `/workspace/tokenmax/prompt-polisher` on Oct 23, 2026. node_modules, virtualenvs, logs and files over 20 MB were left out.

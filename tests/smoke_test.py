@@ -9,7 +9,7 @@ def ok(cond, msg):
     if not cond: FAIL.append(msg)
 
 d = json.load(open(os.path.join(HERE, "data/polish.json")))
-EXPECTED = ["Michael","Pam","Oscar","Jim","Kelly","Ryan","Dwight","Brief","Pods","Path","Vic Tutor","Char Tutor","Boyd Family Times","Dr. EggBot","TokenMax"]
+EXPECTED = ["Michael","Pam","Oscar","Jim","Kelly","Ryan","Dwight","Brief","Pods","Path","Jordan Tutor","Riley Tutor","Lakeside Family Times","Dr. EggBot","TokenMax"]
 names = [b["name"] for b in d["bots"]]
 for e in EXPECTED: ok(e in names, f"bot missing: {e}")
 

@@ -153,10 +153,10 @@ def build():
             method = (f"Kia watch measured at {k['minutesPerWeek']} min and {k['toolCallsPerWeek']} tool calls a week (Fleet Doctor), assumed fully absorbed. "
                       f"Plus an ASSUMED 25% trim from the stop rule on the bills run ({d['minutesPerWeek']} min and {d['toolCallsPerWeek']} calls a week measured). The 25% is a guess, not a measurement.")
         elif s and s["kind"] == "weekend":
-            v = FD_ROUT[("Vic Tutor", "Vic weeknight homework check-in")]; c = FD_ROUT[("Char Tutor", "Char weeknight homework check-in")]
+            v = FD_ROUT[("Jordan Tutor", "Jordan weeknight homework check-in")]; c = FD_ROUT[("Riley Tutor", "Riley weeknight homework check-in")]
             mins = 2 * v["medianMinutes"] + 2 * c["medianMinutes"]; calls = 2 * v["toolCallsPerRun"] + 2 * c["toolCallsPerRun"]
             est = f"≈{mins:.1f} agent-min, ≈{calls:.0f} tool calls and 4 wakes a week"
-            method = "Two weekend fires per tutor × Fleet Doctor's median run length and tool calls per run. Applies only if Boyd and Miranda choose Sun–Thu."
+            method = "Two weekend fires per tutor × Fleet Doctor's median run length and tool calls per run. Applies only if Alex and Sam choose Sun–Thu."
         elif s and s["kind"] == "persona_trim":
             p = byname[s["bot"]]["persona"]; d = p["tokensBefore"] - p["tokensAfter"]
             if d >= 0:
@@ -172,16 +172,16 @@ def build():
         if s and s["kind"] == "oscar":
             total_min += FD_ROUT[("Oscar", "Watch for Kia Finance statement")]["minutesPerWeek"] + 0.25 * FD_ROUT[("Oscar", "Due-soon bills and money surprises")]["minutesPerWeek"]
         if s and s["kind"] == "weekend":
-            total_min += 2 * FD_ROUT[("Vic Tutor", "Vic weeknight homework check-in")]["medianMinutes"] + 2 * FD_ROUT[("Char Tutor", "Char weeknight homework check-in")]["medianMinutes"]
+            total_min += 2 * FD_ROUT[("Jordan Tutor", "Jordan weeknight homework check-in")]["medianMinutes"] + 2 * FD_ROUT[("Riley Tutor", "Riley weeknight homework check-in")]["medianMinutes"]
     fleet_min = sum(r["minutesPerWeek"] for r in FDR["routines"] if r["enabled"])
     data = dict(generatedAt=datetime.datetime.now().strftime("%a %b %-d %Y, %-I:%M %p ET"),
                 botCount=len(bots), routineCount=sum(len(b["routines"]) for b in bots),
                 bots=bots, conflicts=FLEET_CONFLICTS, top10=top,
                 totals=dict(agentMinPerWeekSaved=round(total_min, 1), fleetAgentMinPerWeek=round(fleet_min, 1),
                             method="The sum of the measured or estimated agent-minutes in the top 10, compared with the fleet's enabled routines in Fleet Doctor (runs logged up to Sep 15). Agent-minutes stand in for tokens because per-bot token counts aren't stored on disk."),
-                notes=["Read-only. Nothing was changed on any bot. Boyd decides what to apply, and Boyd and Miranda decide anything about the kids' schedules.",
+                notes=["Read-only. Nothing was changed on any bot. Alex decides what to apply, and Alex and Sam decide anything about the kids' schedules.",
                        "“Before” text is quoted from each bot's profile.json and automation.json, with emails, calendar ids, folder ids, the manifest URL, dollar amounts and birthdates replaced by [redacted].",
-                       "Pods, Path, Boyd Family Times and TokenMax describe daily routines that aren't on disk (newer bots whose routines live server-side). Only their wake lines were reviewed.",
+                       "Pods, Path, Lakeside Family Times and TokenMax describe daily routines that aren't on disk (newer bots whose routines live server-side). Only their wake lines were reviewed.",
                        "Fleet Doctor's run logs end Tue Sep 15, 9:35 PM ET (box restored from an Oct 3 snapshot)."])
     return data
 
