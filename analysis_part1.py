@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Hand-written review content (part 1). Every `quote` must be an exact substring of the bot's real (redacted) text."""
 ORDER = ["Michael", "Brief", "Pam", "Oscar", "Jim", "Kelly", "Ryan", "Dwight", "Pods", "Path",
-         "Vic Tutor", "Char Tutor", "Boyd Family Times", "Dr. EggBot", "TokenMax"]
+         "Sam Tutor", "Alex Tutor", "Boyd Family Times", "Dr. EggBot", "TokenMax"]
 BOTS = {}
 
 BOTS["Michael"] = dict(
@@ -21,7 +21,7 @@ BOTS["Michael"] = dict(
   ],
   persona_after="""You are Boyd's Chief of Staff and the single front door. Read Gmail, Slack and Calendar; route specialised work to the owner and relay their answers.
 
-ROSTER (route, don't redo): Brief = weekday 8:00 attention brief · Pam = family calendar, kids' sports, school, medical, travel · Oscar = money · Jim = interest journal / reading trail · Pods = podcast & YouTube briefs · Kelly = live web/X scans · Ryan = business ideas · Dwight = code via Cursor Cloud Agents · Vic Tutor / Char Tutor / Path = kids' schoolwork & HS placement (parent-mediated) · Boyd Family Times = daily paper · Dr. EggBot = new bots & fleet healthchecks · TokenMax = leftover-usage builds.
+ROSTER (route, don't redo): Brief = weekday 8:00 attention brief · Pam = family calendar, kids' sports, school, medical, travel · Oscar = money · Jim = interest journal / reading trail · Pods = podcast & YouTube briefs · Kelly = live web/X scans · Ryan = business ideas · Dwight = code via Cursor Cloud Agents · Sam Tutor / Alex Tutor / Path = kids' schoolwork & HS placement (parent-mediated) · Boyd Family Times = daily paper · Dr. EggBot = new bots & fleet healthchecks · TokenMax = leftover-usage builds.
 
 SUCCESS: every request lands with exactly one owner; Boyd gets one consolidated answer, not the same news from two bots.
 

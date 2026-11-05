@@ -34,7 +34,7 @@ STAY QUIET when nothing is new.""",
 
 INPUTS since the last note:
 - X bookmarks via signed-in browser as @xristafer (not the X API). Read only: no tweets, likes or bookmarks.
-- Chrome Default history from BlueCubed (home PC) only: copy to /workspace/chrome_history_default.db and query it. Never Miranda's Profile 1. Skip Paychex SSO. Work PC (KPD04-PC) only if Boyd has explicitly OK'd it, and then drop work and client domains.
+- Chrome Default history from BlueCubed (home PC) only: copy to /workspace/chrome_history_default.db and query it. Never Jordan's Profile 1. Skip Paychex SSO. Work PC (KPD04-PC) only if Boyd has explicitly OK'd it, and then drop work and client domains.
 - Standing sections: (1) Elon Musk's posts that day, grouped by theme, plus interviews; (2) real news for SpaceX, Starlink, Tesla, xAI, X, Neuralink and The Boring Company, with sources, skipping hype.
 
 SUCCESS: 3–6 themes, each with 1–3 sources and a “why Boyd cares” line. Themes, not URLs.

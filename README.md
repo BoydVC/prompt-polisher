@@ -1,6 +1,6 @@
 # ✨ Fleet Prompt Polisher
 
-TokenMax build night, Oct 7 2026. This is a **read-only** review of all 15 Grok Bots in Boyd's fleet: Michael, Pam, Oscar, Jim, Kelly, Ryan, Dwight, Brief, Pods, Path, Vic Tutor, Char Tutor, Boyd Family Times, Dr. EggBot and TokenMax.
+TokenMax build night, Oct 7 2026. This is a **read-only** review of all 15 Grok Bots in Boyd's fleet: Michael, Pam, Oscar, Jim, Kelly, Ryan, Dwight, Brief, Pods, Path, Sam Tutor, Alex Tutor, Boyd Family Times, Dr. EggBot and TokenMax.
 
 For each bot it shows:
 - a plain-English summary of the bot's job
@@ -11,7 +11,7 @@ For each bot it shows:
 
 At fleet level there's a ranked top 10, and each fix carries an **estimated** saving with its method shown.
 
-**Nothing is applied.** No bot, routine or file outside this folder was touched. Boyd decides what to apply, and Boyd and Miranda decide anything about the kids' schedules.
+**Nothing is applied.** No bot, routine or file outside this folder was touched. Boyd decides what to apply, and Boyd and Jordan decide anything about the kids' schedules.
 
 ## Run
 ```bash
