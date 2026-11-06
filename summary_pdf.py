@@ -13,7 +13,7 @@ table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid #ddd;pad
 .bot{break-inside:avoid;border:1px solid #e3e3ee;border-radius:6pt;padding:6pt 9pt;margin:6pt 0}.k{font-size:8pt;text-transform:uppercase;color:#b06a00}
 .box{background:#f6f3ff;border-radius:6pt;padding:6pt 9pt}
 </style></head><body>"""]
-    h.append(f"<h1>✨ Fleet Prompt Polisher</h1><div class='sub'>Read-only review of Boyd's {data['botCount']} Grok Bots and {data['routineCount']} routine prompts on disk · built {E(data['generatedAt'])} · nothing applied, Boyd decides</div>")
+    h.append(f"<h1>✨ Fleet Prompt Polisher</h1><div class='sub'>Read-only review of Alex's {data['botCount']} Grok Bots and {data['routineCount']} routine prompts on disk · built {E(data['generatedAt'])} · nothing applied, Alex decides</div>")
     t = data["totals"]
     h.append(f"<p class='box'>The top 10 fixes would save an <b>estimated ≈{t['agentMinPerWeekSaved']} agent-min a week</b>, against ≈{t['fleetAgentMinPerWeek']} a week of enabled routines, and remove {len(data['conflicts'])} cross-bot conflicts.<br><span class='meth'>Method: {E(t['method'])}</span></p>")
     h.append("<h2>Top 10 fixes, ranked by impact</h2><table>")
